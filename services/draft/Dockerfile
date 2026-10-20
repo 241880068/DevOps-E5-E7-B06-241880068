@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # DRAFT 服务镜像（B 组）。构建上下文是仓库根目录：docker compose build 或 make build。
 #   1. 基础镜像按 digest 固定；升级时只改 ARG 这一行，并在提交说明里写新 digest
 #   2. 镜像里只放 docker 命令行（客户端），不放 Docker 引擎；运行时通过挂载的
