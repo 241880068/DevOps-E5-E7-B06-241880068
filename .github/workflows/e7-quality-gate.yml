@@ -43,11 +43,17 @@ jobs:
           set -euo pipefail
           python3 scripts/secret_scan.py . --history 2>&1 | tee work/ci/source-scan.log
 
+      - name: Select registry endpoints for GitHub runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's#m.daocloud.io/docker.io/library/python#python:3.13-slim#g' fixtures/draft/Dockerfile.broken fixtures/ci-candidates/DeepSeek-E5.Dockerfile
+
       - name: Build the service image
         shell: bash
         run: |
           set -euo pipefail
-          docker build --progress=plain -f services/draft/Dockerfile -t "$IMAGE" . 2>&1 | tee work/ci/build.log
+          docker build --progress=plain --build-arg BASE_IMAGE=python:3.13-slim@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74 --build-arg DOCKER_CLI_IMAGE=docker:28.5.1-cli@sha256:9190b0613792e658a7783cf14b2d5ace5941bb68ede7276922ea36ee457d76ad -f services/draft/Dockerfile -t "$IMAGE" . 2>&1 | tee work/ci/build.log
           docker image inspect "$IMAGE" > work/ci/service-image-inspect.json
 
       - name: Scan built image
