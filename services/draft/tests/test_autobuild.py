@@ -42,5 +42,10 @@ class CandidateTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             instructions("RUN apt-get update " + chr(92))
 
+    def test_multistage_candidate_rejected(self):
+        multistage = CANDIDATE + PIN + " AS extra\n"
+        with self.assertRaisesRegex(ValueError, "single-stage"):
+            prepare_candidate(BASE, multistage)
+
 if __name__ == "__main__":
     unittest.main()
